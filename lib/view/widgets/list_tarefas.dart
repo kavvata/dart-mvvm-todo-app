@@ -12,19 +12,6 @@ class ListTarefas extends StatefulWidget {
 }
 
 class _ListTarefaState extends State<ListTarefas> {
-  Text geraTitulo(Tarefa tarefa) {
-    Text title;
-    if (!tarefa.feito) {
-      title = Text(tarefa.nome);
-    } else {
-      title = Text.rich(TextSpan(
-          text: tarefa.nome,
-          style: const TextStyle(
-              color: Colors.grey, decoration: TextDecoration.lineThrough)));
-    }
-    return title;
-  }
-
   Widget _geraListaTarefas() {
     widget.viewModel.fetchListaTarefas();
 
