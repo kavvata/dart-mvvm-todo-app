@@ -15,11 +15,31 @@ class _StateCadastroTarefa extends State<TelaCadastroTarefa> {
   final _formKey = GlobalKey<FormState>();
   DateTime prazoSelecionado = DateTime.now();
 
-  final Map<String, TextEditingController> controllers = {
-    'nome': TextEditingController(),
-    'prazo': TextEditingController(),
-    'descricao': TextEditingController(),
-  };
+  final Map<String, TextEditingController> controllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+
+    controllers.addAll({
+      'nome': TextEditingController(),
+      'prazo': TextEditingController(),
+      'descricao': TextEditingController(),
+    });
+
+    var tarefaParaEditar = widget.viewModel.selecionada;
+
+    if (tarefaParaEditar == null) {
+      return;
+    }
+
+    controllers['nome']!.text = tarefaParaEditar.nome;
+    controllers['prazo']!.text =
+        '${prazoSelecionado.day}/${prazoSelecionado.month}/${prazoSelecionado.year}';
+
+    prazoSelecionado = tarefaParaEditar.prazo;
+    controllers['descricao']!.text = tarefaParaEditar.descricao;
+  }
 
   void _cadastrarTarefa() {
     final isValido = _formKey.currentState?.validate();
@@ -32,8 +52,19 @@ class _StateCadastroTarefa extends State<TelaCadastroTarefa> {
     final descricao = controllers['descricao']!.text;
 
     widget.viewModel.cadastrarTarefa(nome, descricao, prazoSelecionado);
-    print(widget.viewModel.tarefas);
     _formKey.currentState?.save();
+  }
+
+  void _selecionaData() async {
+    prazoSelecionado = await showDatePicker(
+            context: context,
+            firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
+            lastDate: DateTime.parse("2069-01-01")) ??
+        DateTime.now();
+
+    String str =
+        '${prazoSelecionado.day}/${prazoSelecionado.month}/${prazoSelecionado.year}';
+    controllers['prazo']!.text = str;
   }
 
   /// NOTE: Gera lista de widgets do corpo do formulario.
@@ -94,23 +125,12 @@ class _StateCadastroTarefa extends State<TelaCadastroTarefa> {
     return body;
   }
 
-  void _selecionaData() async {
-    prazoSelecionado = await showDatePicker(
-            context: context,
-            firstDate: DateTime.fromMicrosecondsSinceEpoch(0),
-            lastDate: DateTime.parse("2069-01-01")) ??
-        DateTime.now();
-
-    String str =
-        '${prazoSelecionado.day}/${prazoSelecionado.month}/${prazoSelecionado.year}';
-    controllers['prazo']!.text = str;
-  }
-
   @override
   void dispose() {
     controllers.forEach((key, controller) {
       controller.dispose();
     });
+    widget.viewModel.limpaSelecionado();
     super.dispose();
   }
 

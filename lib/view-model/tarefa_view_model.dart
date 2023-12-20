@@ -5,6 +5,7 @@ import 'package:todo_app/model/repository/repositorio_tarefa.dart';
 class TarefaViewModel with ChangeNotifier {
   List<Tarefa> _tarefasCache = <Tarefa>[];
   RepositorioTarefa repo;
+  Tarefa? selecionada;
 
   List<Tarefa> get tarefas => _tarefasCache;
 
@@ -13,6 +14,14 @@ class TarefaViewModel with ChangeNotifier {
   void cadastrarTarefa(String nome, String descricao, DateTime prazo) {
     _tarefasCache.add(repo.cadastrarTarefa(nome, descricao, prazo));
     notifyListeners();
+  }
+
+  void selecionaTarefa(Tarefa t) {
+    selecionada = t;
+  }
+
+  void limpaSelecionado() {
+    selecionada = null;
   }
 
   void fetchListaTarefas() {

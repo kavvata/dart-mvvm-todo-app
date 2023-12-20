@@ -9,11 +9,12 @@ class Tarefa {
   Tarefa.fromDAO(this.id, this.nome, this.descricao, this.prazo, this.feito);
 
   void toggleFeito() => feito = !feito;
+  bool get isFeito => feito;
 
   @override
   String toString() {
     var estado = feito ? "[X]" : "[ ]";
 
-    return "$estado - $nome | Prazo: $prazo";
+    return "$id - $estado $nome | Prazo: $prazo";
   }
 }
