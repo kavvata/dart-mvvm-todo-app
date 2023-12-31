@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todo_app/model/entity/tarefa.dart';
 import 'package:todo_app/view-model/tarefa_view_model.dart';
 import 'package:todo_app/view/widgets/tarefa_checkbox_tile.dart';
 
@@ -12,39 +11,30 @@ class ListTarefas extends StatefulWidget {
 }
 
 class _ListTarefaState extends State<ListTarefas> {
-  Widget _geraListaTarefas() {
+  @override
+  Widget build(BuildContext context) {
     widget.viewModel.fetchListaTarefas();
 
-    final builder = ListenableBuilder(
+    return Center(
+        child: ListenableBuilder(
       listenable: widget.viewModel,
       builder: (context, child) {
         List<Widget> tiles = <Widget>[];
 
         for (var tarefa in widget.viewModel.tarefas) {
-          var builder = ListenableBuilder(
-              listenable: widget.viewModel,
-              builder: (context, child) => TarefaCheckBoxTile(
-                  tarefa: tarefa,
-                  onTitleTap: () {
-                    widget.viewModel.selecionaTarefa(tarefa);
-                    Navigator.pushNamed(context, 'cadastro');
-                  },
-                  onFeito: (novoValor) =>
-                      widget.viewModel.toggleFeito(tarefa)));
+          var tile = TarefaCheckBoxTile(
+              tarefa: tarefa,
+              onTitleTap: () {
+                widget.viewModel.selecionaTarefa(tarefa);
+                Navigator.pushNamed(context, 'cadastro');
+              },
+              onFeito: (novoValor) => widget.viewModel.toggleFeito(tarefa));
 
-          tiles.add(builder);
+          tiles.add(tile);
         }
+
         return ListView(children: tiles);
       },
-    );
-
-    return builder;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: _geraListaTarefas(),
-    );
+    ));
   }
 }
