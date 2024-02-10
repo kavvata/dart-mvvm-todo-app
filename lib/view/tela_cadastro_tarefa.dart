@@ -121,7 +121,12 @@ class _StateCadastroTarefa extends State<TelaCadastroTarefa> {
       ),
       // Botao Cadastro
       ElevatedButton(
-          onPressed: () => _cadastrarTarefa(), child: const Text('Cadastrar'))
+          onPressed: () {
+            _cadastrarTarefa();
+            const snackBar = SnackBar(content: Text('Tarefa Cadastrada!'));
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          },
+          child: const Text('Cadastrar'))
     ];
     return body;
   }
